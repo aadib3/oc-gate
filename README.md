@@ -135,3 +135,4 @@ https://oc-gate.apps.ocp4.xxx.xxx/noVNC/vnc_lite.html?path=k8s/apis/subresources
 
 
 ## 5- Go to URL to access VNC console for the desired VM
+![Screenshot from 2021-03-04 18-08-05](https://user-images.githubusercontent.com/77073889/110043468-71163c80-7d15-11eb-854c-83fd30b99eb8.jpg)
