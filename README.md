@@ -1,155 +1,133 @@
-# oc-gate
+# Steps to deploy oc-gate on OCP cluster
 
-![alt gopher network](https://raw.githubusercontent.com/yaacov/oc-gate/main/web/public/network-side.png)
+## 1 - Create test dir and populate it with SSL certs:
+$ mkdir test
 
-It allows k8s users, with access to a list of objects, to give other users (or none k8s users) access to a sub-set of their objects for a limited time.
-
-OC Gate provide a filtering layer on top of k8s RABC that filter requests by validating time of request
-and object name before passing them to k8s RBAC for final proccessing.
-
-[![Go Report Card](https://goreportcard.com/badge/github.com/yaacov/oc-gate)](https://goreportcard.com/report/github.com/yaacov/oc-gate)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-(gopher network image - [egonelbre/gophers](https://github.com/egonelbre/gophers))
-
-## Install
-
-Using go install:
-
+$ openssl genrsa -out test/key.pem
 ``` bash
-go install github.com/yaacov/oc-gate/cmd/oc-gate
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..............+++++
+..............................+++++
+e is 65537 (0x010001)
+$
 ```
 
-Using container image:
-
+$ openssl req -new -x509 -sha256 -key test/key.pem -out test/cert.pem -days 3650
 ``` bash
-podman run -p 8080:8080 --privileged \
-  --mount type=bind,source=test,target=/app/test \
-  -it quay.io/yaacov/oc-gate \
-  ./oc-gate \
-  < Required flags, see below for reqired flags, e.g. -api-server=... -ca-file=...  >
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [US]:
+State or Province Name (full name) []:
+Locality Name (eg, city) [Default City]:
+Organization Name (eg, company) [Default Company Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:
+Email Address []:
+$
 ```
 
-Deploy as pods in a cluster:
-See [deploy/README.md](/deploy) for cluster deployment set examples.
-
-## What can I do with it ?
-
-- Create secure web applications leveraging the power of k8s API.
-- Sublet access to your k8s resources for limited time, based on API path matching.
-
-## Modes
-
-- Interactive authentication using a OAuth2 authentication issuer.
-- Non interative authentication using bearer JWT Authorization header.
-
-## Running using ODK internal OAuth2 server
-
-When running using OKD (Openshift) OAuth issuer, operator does not need to provide a k8s service acount token,
-the internal OAuth2 server will issue tokens that can be verified by the cluster.
-
-![alt demo gif](https://raw.githubusercontent.com/yaacov/oc-gate/main/web/public/using_okd_oauth.gif)
-
-## Verifying RSA signed JWT authentication tokens
-
-In this configuration an operator will create signed expiring JWT tokens that will
-allow access to specific cluster resources. The proxy will verify the JWT using a
-public key, and allow access acording to TWJ claims. If JWT is cerified and the requested
-k8s object match JWT claims, the proxy will use it's own service acount to do the request.
-
-Allowed JWT claims are:
-
-- exp - int, expiration (unix time)
-- nbf - int, not before (unix time)
-- allowedAPIMethods - string, comma seperated list of allowed API methods (e.g. is "get,post")
-- allowedAPIRegexp - string, a reular expresion of allowed api call paths.
-
-![alt demo gif](https://raw.githubusercontent.com/yaacov/oc-gate/main/web/public/custom_tokens.gif)
-
-## Compile and run
-
+$ ls test
 ``` bash
-go build -o ./ ./cmd/oc-gate/
-
-./oc-gate --help
+cert.pem  key.pem
+$
 ```
 
-## Examples
-
-See [deploy/README.md](/deploy) for cluster deployment set examples.
-
-### Get some pre requirments
-
-```bash
-# Get the k8s API CA, this is used for secure comunication with the server.
-# Note: you can use "-skip-verify-tls" flag to comunicate unsecurly with server
-# instead of fetching this file.
-oc get secrets -n default --field-selector type=kubernetes.io/service-account-token -o json | \
-    jq '.items[0].data."ca.crt"' -r | python -m base64 -d > test/ca.crt
-
-# Create a public and private keys, this will be used to verify comunication with the oc-gate
-# server, and to sign and verify JWT tokens.
-# Note: use your own private and public keys if you already have them.
-# Note II: oc-gate JWT verification only support RS265 RSA signiture algorithm
-#          make sure you use rsa keys for the JWT creation and verification.
-openssl genrsa -out test/key.pem
-openssl req -new -x509 -sha256 -key test/key.pem -out test/cert.pem -days 3650
-
-# Getting a service account token, the serive account token is stored in a secret matched
-# to the service account.
-# Note: this example use "oc cli" for shortcut, you can always use the secret to get the token.
-oc whoami -t > test/token
-
-# For the noVNC demo, you can git clone the noVNC static html files into the `web/public`
-# directory
-git clone https://github.com/novnc/noVNC web/public/noVNC
-```
-
-### Run the proxy locally
-
-Make sure you have all the pre-required certifations in the test directory.
-
+## 2- Login into OCP cluster to deploy oc-gate app:
+$ oc login https://api.ocp4.xxx.xxx:6443
 ``` bash
-# Proxy the noVNC html files mixed with k8s API (replace the cluster with one you own)
-# note that the proxy address must match the redirect address in the oauthclient CR we created
-# earlier.
-# --api-server : the k8s API server, this command assumes this cluster is an OKD (Openshift) cluster
-#                and the proxy will look up it's OAuth server automatically and pass tokens provided
-#                by the internal authentication issuer directly to the cluster.
-oc-gate \
-  --api-server https://api.ostest.test.metalkube.org:6443 \
-  --k8s-bearer-token-passthrough true \
-  --ca-file test/ca.crt
+Authentication required for https://api.ocp4.xxx.xxx:6443 (openshift)
+Username: xxxx
+Password: 
+Login successful.
 
-# Run without an OAuth2 server
-# --jwt-token-key-file    : the public key used to verify JWT access tokens
-# --k8s-bearer-token-file : the k8s token that will be used by the proxy to 
-#                           fetch k8s resources for all verified users
-oc-gate \
-  --api-server https://api.ostest.test.metalkube.org:6443 \
-  --k8s-bearer-token-file test/token \
-  --jwt-token-key-file test/cert.pem \
-  --skip-verify-tls
+You have access to xx projects, the list has been suppressed. You can list all projects with ' projects'
+
+Using project "default".
+$
 ```
 
-### Run the proxy locally using a container image
-
-When running from container image replage the local CLI command `oc-gate` with a `podman run ...` call.
-
-For example, after verifying that you have the `./test` dierctory with all the neccary certification,
-you can run:
-
+## 3- Create oc-gate project:
+$ oc new-project oc-gate
 ``` bash
-# Run without an OAuth2 server
-# --jwt-token-key-file    : the public key used to verify JWT access tokens
-# --k8s-bearer-token-file : the k8s token that will be used by the proxy to 
-#                           fetch k8s resources for all verified users
-podman run -p 8080:8080 --privileged \
-  --mount type=bind,source=test,target=/app/test \
-  -it quay.io/yaacov/oc-gate \
-  ./oc-gate \
-  --api-server https://api.ostest.test.metalkube.org:6443 \
-  --k8s-bearer-token-file test/token \
-  --jwt-token-key-file test/cert.pem \
-  --skip-verify-tls
+Now using project "oc-gate" on server "https://api.xxx.xxx.lab:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+$
 ```
+
+## 4- Create a new secret oc-gate-jwt-secret in the oc-gate project:
+$ oc create secret generic oc-gate-jwt-secret --from-file=test/cert.pem
+``` bash
+secret/oc-gate-jwt-secret created
+```
+
+## 5- Create oc-gate template using included oc-gate-template.yaml:
+$ oc create -f oc-gate-template.yaml 
+``` bash
+template.template.openshift.io/oc-gate created
+```
+
+## 6- Create oc-gate OCP objects using the oc-gate template:
+$ oc process -p ROUTE_URL=oc-gate.apps.ocp4.xxx.xxx oc-gate | oc create -f -
+``` bash
+route.route.openshift.io/oc-gate created
+serviceaccount/oc-gate created
+clusterrolebinding.authorization.openshift.io/oc-gate-cluster-reader created
+service/oc-gate created
+replicationcontroller/oc-gate created
+```
+
+## 7- Verify OCP objects created and running:
+$ oc get all
+``` bash
+NAME                READY   STATUS    RESTARTS   AGE
+pod/oc-gate-rx4p4   1/1     Running   0          2m24s
+
+NAME                            DESIRED   CURRENT   READY   AGE
+replicationcontroller/oc-gate   1         1         1       2m25s
+
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/oc-gate   ClusterIP   172.30.140.240   <none>        8080/TCP   2m25s
+
+NAME                               HOST/PORT                       PATH   SERVICES   PORT   TERMINATION   WILDCARD
+route.route.openshift.io/oc-gate   oc-gate.apps.ocp4.xxx.xxx          oc-gate    8080   reencrypt     None
+```
+
+# Steps to authenticate access to a virtual machine noVNC console
+
+## 1- Create the following variables with virtual machine name, namespace, path and token expiry:
+$ vm=rhel6-150.ocp4.xxx.xxx
+$ ns=ocs-cnv
+$ path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
+$ token_expiry=3600
+$ ocgateurl="oc-gate.apps.ocp4.xxx.xxx"
+
+## 2- Create JWT token signed by private SSL key:
+$ TOKEN=$(echo {\"exp\": $(expr $(date +%s) + $token_expiry),\"allowedAPIRegexp\":\"^/$path\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
+$ echo $TOKEN
+``` bash
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkQVBJUmVnZXhwIjoiXi9wYXRoIiwiZXhwIjoxNjE0ODk1NjAwfQ.j6AqKritRobMWoKjUGjnp7Khntxsr2BsXZ2-GZmb20VLBAX4r6VDzsN4VP5wBalDjYn8o0mlt7kJ4BWy81hMOLWst8TD-d3Vt6xXr0Eo8rVUnodjXP_YctO4lHT1eoizNFnook80XTsHoDgXEGm04nqoKbIB71Re-7cQFZQSfWFPjUM4Qbl32ebFqfjDI-29UoerB3M5eyonYhmLHLS9LlL_XRbaDh1XOBEDMwQ9jQMw5fLQ2P7wtmyVHkHkUqmaA9d51KKuiGQrz0mQtdiHaq_DQYkoZ9Z47eZHrlOUlcAS7IEfaw3ZSCLB9kwXExQ5X0BmYP7hqvHeQTPsd1aWVg
+```
+
+## 3- Display console path:
+consoleurl=https://$ocgateurl/noVNC/vnc_lite.html?path=$path
+echo $consoleurl
+``` bash
+https://oc-gate.apps.ocp4.xxx.xxx/noVNC/vnc_lite.html?path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-1.xxx.xxx/vnc
+```
+
+## 4- Inject cookie into browser with console URL and console:
+
+
+## 5- Go to URL to access VNC console for the desired VM

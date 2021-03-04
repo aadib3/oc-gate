@@ -95,7 +95,7 @@ objects:
           name: oc-gate
       spec:
         containers:
-        - image: "quay.io/yaacov/oc-gate:latest"
+        - image: "quay.io/yaacov/oc-gate@sha256:fcc5333f7d83e86d6ce1104a0da4c0f13789985c6d324bc935f8c3dacb8a02ef"
           name: oc-gate
           ports:
           - name: oc-gate-https
