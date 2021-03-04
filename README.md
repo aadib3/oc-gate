@@ -107,22 +107,26 @@ route.route.openshift.io/oc-gate   oc-gate.apps.ocp4.xxx.xxx          oc-gate   
 # Steps to authenticate access to a virtual machine noVNC console
 
 ## 1- Create the following variables with virtual machine name, namespace, path and token expiry:
+``` bash
 $ vm=rhel6-150.ocp4.xxx.xxx
 $ ns=ocs-cnv
 $ path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
 $ token_expiry=3600
 $ ocgateurl="oc-gate.apps.ocp4.xxx.xxx"
+```
 
 ## 2- Create JWT token signed by private SSL key:
 $ TOKEN=$(echo {\"exp\": $(expr $(date +%s) + $token_expiry),\"allowedAPIRegexp\":\"^/$path\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
+
 $ echo $TOKEN
 ``` bash
 eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkQVBJUmVnZXhwIjoiXi9wYXRoIiwiZXhwIjoxNjE0ODk1NjAwfQ.j6AqKritRobMWoKjUGjnp7Khntxsr2BsXZ2-GZmb20VLBAX4r6VDzsN4VP5wBalDjYn8o0mlt7kJ4BWy81hMOLWst8TD-d3Vt6xXr0Eo8rVUnodjXP_YctO4lHT1eoizNFnook80XTsHoDgXEGm04nqoKbIB71Re-7cQFZQSfWFPjUM4Qbl32ebFqfjDI-29UoerB3M5eyonYhmLHLS9LlL_XRbaDh1XOBEDMwQ9jQMw5fLQ2P7wtmyVHkHkUqmaA9d51KKuiGQrz0mQtdiHaq_DQYkoZ9Z47eZHrlOUlcAS7IEfaw3ZSCLB9kwXExQ5X0BmYP7hqvHeQTPsd1aWVg
 ```
 
 ## 3- Display console path:
-consoleurl=https://$ocgateurl/noVNC/vnc_lite.html?path=$path
-echo $consoleurl
+$ consoleurl=https://$ocgateurl/noVNC/vnc_lite.html?path=$path
+
+$ echo $consoleurl
 ``` bash
 https://oc-gate.apps.ocp4.xxx.xxx/noVNC/vnc_lite.html?path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-1.xxx.xxx/vnc
 ```
