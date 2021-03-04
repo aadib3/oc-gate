@@ -1,3 +1,4 @@
+![Screenshot from 2021-03-04 18-08-05](https://user-images.githubusercontent.com/77073889/110043468-71163c80-7d15-11eb-854c-83fd30b99eb8.jpg)
 # Steps to deploy oc-gate on OCP cluster
 
 ## 1 - Create test dir and populate it with SSL certs:
