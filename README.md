@@ -115,7 +115,7 @@ $ token_expiry=3600
 $ ocgateroute="oc-gate.apps.ocp4.xxx.xxx"
 ```
 
-## 2- Set and display POST form URL:
+## 2- Set and display POST service URL:
 $ posturl=https://$ocgateroute/login.html
 
 $ echo $posturl
@@ -139,8 +139,8 @@ $ echo $postpath
 /noVNC/vnc_lite.html?path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-150.ocp4.xxx.xxx/vnc
 ```
 
-## 5- Open a web browser and enter post URL from step 2:
+## 5- Open a web browser and enter post service URL from step 2:
 
-## 6- Enter token in token field and the POST path in the Then field, then click Submit:
+## 6- Enter token from step 3 in token field and the POST path from step 4 in the Then field, then click Submit:
 
 ## 7- Press enter a couple of times and you will have access to the console:
