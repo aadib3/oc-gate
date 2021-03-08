@@ -115,24 +115,37 @@ $ token_expiry=3600
 $ ocgateroute="oc-gate.apps.ocp4.xxx.xxx"
 ```
 
-## 2- Create JWT token signed by private SSL key:
-$ TOKEN=$(echo {\"exp\": $(expr $(date +%s) + $token_expiry),\"allowedAPIRegexp\":\"^/$path\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
+## 2- Set and display POST service URL:
+$ posturl=https://$ocgateroute/login.html
+
+$ echo $posturl
+``` bash
+https://oc-gate.apps.ocp4.xxx.xxx/login.html
+```
+
+## 3- Create and diplay JWT token signed by private SSL key:
+$ TOKEN=$(echo {\\"exp\\": $(expr $(date +%s) + $token_expiry),\\"allowedAPIRegexp\\":\\"^/$path\\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
 
 $ echo $TOKEN
 ``` bash
 eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkQVBJUmVnZXhwIjoiXi9wYXRoIiwiZXhwIjoxNjE0ODk1NjAwfQ.j6AqKritRobMWoKjUGjnp7Khntxsr2BsXZ2-GZmb20VLBAX4r6VDzsN4VP5wBalDjYn8o0mlt7kJ4BWy81hMOLWst8TD-d3Vt6xXr0Eo8rVUnodjXP_YctO4lHT1eoizNFnook80XTsHoDgXEGm04nqoKbIB71Re-7cQFZQSfWFPjUM4Qbl32ebFqfjDI-29UoerB3M5eyonYhmLHLS9LlL_XRbaDh1XOBEDMwQ9jQMw5fLQ2P7wtmyVHkHkUqmaA9d51KKuiGQrz0mQtdiHaq_DQYkoZ9Z47eZHrlOUlcAS7IEfaw3ZSCLB9kwXExQ5X0BmYP7hqvHeQTPsd1aWVg
 ```
 
-## 3- Display console path:
-$ consoleurl=https://$ocgateroute/noVNC/vnc_lite.html?path=$path
+## 4- Set and display POST path:
+$ postpath=/noVNC/vnc_lite.html?path=$path
 
-$ echo $consoleurl
+$ echo $postpath
 ``` bash
-https://oc-gate.apps.ocp4.xxx.xxx/noVNC/vnc_lite.html?path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-1.xxx.xxx/vnc
+/noVNC/vnc_lite.html?path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-150.ocp4.xxx.xxx/vnc
 ```
 
-## 4- Inject cookie into browser with console URL and token:
+## 5- Open a web browser and enter post service URL from step 2:
+![Screenshot from 2021-03-08 13-12-17](https://user-images.githubusercontent.com/77073889/110363740-eb460a00-8010-11eb-8e7a-256a6c42302c.png)
 
 
-## 5- Go to URL to access VNC console for the desired VM
-![Screenshot from 2021-03-04 18-08-05](https://user-images.githubusercontent.com/77073889/110043468-71163c80-7d15-11eb-854c-83fd30b99eb8.jpg)
+## 6- Enter token from step 3 in token field and the POST path from step 4 in the Then field, then click Submit:
+![Screenshot from 2021-03-08 13-29-39](https://user-images.githubusercontent.com/77073889/110364968-6eb42b00-8012-11eb-92f0-cabe751ec733.png)
+
+
+## 7- Press enter a couple of times and you will have access to the console:
+![Screenshot from 2021-03-08 13-32-08](https://user-images.githubusercontent.com/77073889/110365266-d4a0b280-8012-11eb-8a89-26bd1d58be21.png)
