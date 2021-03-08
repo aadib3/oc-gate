@@ -140,6 +140,8 @@ $ echo $postpath
 ```
 
 ## 5- Open a web browser and enter post service URL from step 2:
+![Screenshot from 2021-03-08 13-12-17](https://user-images.githubusercontent.com/77073889/110363740-eb460a00-8010-11eb-8e7a-256a6c42302c.png)
+
 
 ## 6- Enter token from step 3 in token field and the POST path from step 4 in the Then field, then click Submit:
 
