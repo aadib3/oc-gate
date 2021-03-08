@@ -112,6 +112,7 @@ $ vm=rhel6-150.ocp4.xxx.xxx
 $ ns=ocs-cnv
 $ path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
 $ token_expiry=3600
+$ keyfile=/home/aadib/console-access/test/key.pem
 $ ocgateroute="oc-gate.apps.ocp4.xxx.xxx"
 ```
 
@@ -124,7 +125,7 @@ https://oc-gate.apps.ocp4.xxx.xxx/login.html
 ```
 
 ## 3- Create and diplay JWT token signed by private SSL key:
-$ TOKEN=$(echo {\\"exp\\": $(expr $(date +%s) + $token_expiry),\\"matchPath\\":\\"^/$path\\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
+$ TOKEN=$(echo {\\"exp\\": $(expr $(date +%s) + $token_expiry),\\"matchPath\\":\\"^/$path\\"} | jwt -key $keyfile -alg RS256 -sign -)
 
 $ echo $TOKEN
 ``` bash
