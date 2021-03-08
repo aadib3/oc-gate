@@ -124,7 +124,7 @@ https://oc-gate.apps.ocp4.xxx.xxx/login.html
 ```
 
 ## 3- Create and diplay JWT token signed by private SSL key:
-$ TOKEN=$(echo {\\"exp\\": $(expr $(date +%s) + $token_expiry),\\"allowedAPIRegexp\\":\\"^/$path\\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
+$ TOKEN=$(echo {\\"exp\\": $(expr $(date +%s) + $token_expiry),\\"matchPath\\":\\"^/$path\\"} | jwt -key ./test/key.pem -alg RS256 -sign -)
 
 $ echo $TOKEN
 ``` bash
