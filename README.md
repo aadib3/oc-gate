@@ -144,5 +144,8 @@ $ echo $postpath
 
 
 ## 6- Enter token from step 3 in token field and the POST path from step 4 in the Then field, then click Submit:
+![Screenshot from 2021-03-08 13-29-39](https://user-images.githubusercontent.com/77073889/110364968-6eb42b00-8012-11eb-92f0-cabe751ec733.png)
+
 
 ## 7- Press enter a couple of times and you will have access to the console:
+![Screenshot from 2021-03-08 13-32-08](https://user-images.githubusercontent.com/77073889/110365266-d4a0b280-8012-11eb-8a89-26bd1d58be21.png)
