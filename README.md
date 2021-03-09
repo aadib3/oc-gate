@@ -111,7 +111,7 @@ route.route.openshift.io/oc-gate   oc-gate.apps.ocp4.xxx.xxx          oc-gate   
 
 
 ## 2- Go get jwt executable:
-$ go get github.com/aadib3/oc-gate/jwt
+$ go get github.com/dgrijalva/jwt-go/cmd/jwt
 
 
 ## 3- Add jwt to path:
