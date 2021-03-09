@@ -122,12 +122,12 @@ $ PATH=$PATH:~/go/bin
 
 ## 1- Create the following variables with virtual machine name, namespace, path, token expiry in seconds, URL for oc-gate route:
 ``` bash
-$ vm=rhel6-150.ocp4.xxx.xxx
-$ ns=ocs-cnv
+$ vm=rhel6-150.ocp4.xxx.xxx (Replace with VM name)
+$ ns=ocs-cnv (Replace with namespace where VM resides)
 $ path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
-$ token_expiry=3600
-$ keyfile=/home/aadib/console-access/test/key.pem
-$ ocgateroute="oc-gate.apps.ocp4.xxx.xxx"
+$ token_expiry=3600 (Replace with desired length of token life in seconds)
+$ keyfile=/home/aadib/console-access/test/key.pem (Replace with location of where the SSL key was created)
+$ ocgateroute="oc-gate.apps.ocp4.xxx.xxx" (Replace with correct route name)
 ```
 
 ## 2- Set and display POST service URL:
