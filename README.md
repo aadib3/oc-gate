@@ -125,7 +125,7 @@ $ PATH=$PATH:~/go/bin
 $ vm=rhel6-150.ocp4.xxx.xxx (Replace with VM name)
 $ ns=ocs-cnv (Replace with namespace where VM resides)
 $ path=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
-$ token_expiry=3600 (Replace with desired length of token life in seconds)
+$ token_expiry=3600 (Replace with desired token duration in seconds)
 $ keyfile=/home/aadib/console-access/test/key.pem (Replace with location of where the SSL key was created)
 $ ocgateroute="oc-gate.apps.ocp4.xxx.xxx" (Replace with correct route name)
 ```
