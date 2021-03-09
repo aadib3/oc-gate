@@ -106,6 +106,7 @@ route.route.openshift.io/oc-gate   oc-gate.apps.ocp4.xxx.xxx          oc-gate   
 
 # Steps to install golang and jwt
 1- As root yum install golang:
+\#
 \# yum install golang -y
 
 # Steps to authenticate access to a virtual machine noVNC console
