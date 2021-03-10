@@ -163,3 +163,4 @@ $ echo $postpath
 
 
 ## 7- Press enter a couple of times and you will have access to the console:
+![screenshot](https://user-images.githubusercontent.com/77073889/110713069-47568d00-81cf-11eb-8bfc-bdc2b363c516.png)
