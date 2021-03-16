@@ -1,0 +1,8 @@
+apiVersion: ocgate.yaacov.com/v1beta1
+kind: GateToken
+metadata:
+  name: VMNAME
+  namespace: oc-gate
+spec:
+  image: OCGATEIMAGE
+  match-path: ^/OCGATEPOSTPATH
