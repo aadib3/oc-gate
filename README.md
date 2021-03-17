@@ -4,6 +4,7 @@
 ``` bash
 $ vm=rhel6-150.ocp4.xxx.xxx 
 $ ns=ocs-cnv
+$ ocgateroute=oc-gate.apps.ocp4.xxx.xxx
 $ ocgatepath=k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/$ns/virtualmachineinstances/$vm/vnc
 $ posturl=https://$ocgateroute/login.html
 $ postpath=/noVNC/vnc_lite.html?path=$ocgatepath
