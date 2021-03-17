@@ -18,9 +18,13 @@ $ oc create -f gatetoken.yaml
 ``` bash
 gatetoken.ocgate.yaacov.com/oc-gate-token created
 ```
+
 $ bt=<bearer token>
+
 $ apipath="https://api.ocp4.xxx.xxx:6443/apis/ocgate.yaacov.com/v1beta1/namespaces/oc-gate/gatetokens"
+
 $ data=\'{\"apiVersion\":\"ocgate.yaacov.com/v1beta1\",\"kind\":\"GateToken\",\"metadata\":{\"name\":\"$vm-$date\",\"namespace\":\"oc-gate\"},\"spec\":{\"match-path\":\"^/$consolepath\"}}\'
+
 $ curl -k -H 'Accept: application/json' -H \"Authorization: Bearer $bt\" -H \"Content-Type: application/json\" --request POST --data $data $apipath
 
 ## 3- Set and display the content of consoleurl:
