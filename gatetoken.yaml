@@ -1,8 +1,0 @@
-apiVersion: ocgate.yaacov.com/v1beta1
-kind: GateToken
-metadata:
-  name: rhel6-150.ocp4.goldman.lab-2103161948
-  namespace: oc-gate
-spec:
-  image: OCGATEIMAGE
-  match-path: ^/k8s/apis/subresources.kubevirt.io/v1alpha3/namespaces/ocs-cnv/virtualmachineinstances/rhel6-150.ocp4.goldman.lab/vnc
