@@ -19,7 +19,7 @@ $ oc create -f gatetoken.yaml
 gatetoken.ocgate.yaacov.com/oc-gate-token created
 ```
 
-$ bt=<bearer token>
+$ bt=bearer token
 
 $ apipath="https://api.ocp4.xxx.xxx:6443/apis/ocgate.yaacov.com/v1beta1/namespaces/oc-gate/gatetokens"
 
